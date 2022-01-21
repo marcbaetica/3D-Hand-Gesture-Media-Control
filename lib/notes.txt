@@ -1,0 +1,25 @@
+Sampling Rate: No of samples per Bit-depth. (or) simply frame rate for audio.
+- When recording 44.1 kHz or 48 kHz audio, we are capturing frequencies up to the 22 kHz or respectively 24 kHz range. The requirement for sampling at twice its frequency is to satisfy Nyquist theorem (aka the conversion from analog to digital and being able to reconstruct the analog signal with 100% accuracy).
+- Sampling a sinusoid at exactly twice its frequency will generally not allow you to reconstruct it. As soon as you sample at a rate slightly larger than twice its frequency you will be able to reconstruct it perfectly.
+- Since human hearing range is roughly 20 Hz to 20,000 Hz, the sampling rate has to be greater than 40 kHz.
+- Sampling higher and converting to lower frequencies is bad as it might result in signal degradation (see aliasing);
+- 48 kHz sampling uses 8% more disk space than 44.1 kHz. Also, experts can confirm that 44.1 kHz will capture the entire range of human hearing with 100% accuracy for band limited signals like music.
+- For setting and reading the sampling rate in pyaudio streams or wave files, the following methods are used: wave_writer.setframerate(44100), wave_read.getframerate(), port_audio.open(rate=44100, ...). The total number of frames can be red using wave_read.getnframes(). wave_read.getnframes() / wave_read.getframerate() will calculate the runtime in seconds for that particular audio file. These values, among others, can also be observed using wave_read.getparams().
+
+
+Bit Depth: Acts as the resolution for audio.
+- The number of increments that the amplitude of the wave can have at any given sample point. This distance between the minima and maxima is known as dynamic range. 16, 24 and 32 bits have a dynamic range of 96, 144, 192 dB respectively. For recording music use 24 bits, for anything else 16 bits (including playing music) will be more than enough.
+- The higher the debt (4 bit > 8 bit > 16 bit > 32 bit), the less the amplitude rounding will be, thus decreasing the amount of noise being added to the noise floor. This increase in bit depth crushing the noise holds also true for the rest of the noise within the noise sources floor. At 4 bits the noise overlaps the track while at 8 bits it overlaps quiet parts of the track (low amplitude areas in the time domain graph).
+- In signal theory, the noise floor is the measure of the signal created from the sum of all the noise sources and unwanted signals within a measurement system, where noise is defined as any signal other than the one being monitored.
+- 16 bit (aka 0xffff) represents a maximum amplitude of 65535 (96 dB dynamic range). For what reason would anyone want anything more is unknown other than showing off specs.
+- As an example, when reading a frame (aka a sample per channel)  using wave_read.readframes(1):
+    - With a signal who's bit depth is 16 bits -> Usually a frame will be represented using b'\x06\xff' -> 1791 amplitude for one channel. For two channels it might look like b'\x06\xffg\xfe' -> 1791 for channel 1 and 26622 for channel 2.
+    - With a signal who's bit depth is 24 bits -> Usually a frame will be represented using b'\x12AB' (0x12 0x41 0x42' in hex) -> 1,196,354 amplitude for one channel. For two channels, double the amount of bits (similar to the example above).
+- For setting and reading the bit depth in pyaudio streams or wave files, the following methods are used: wave_writer.setsampwidth(...), wave_read.getsampwidth(), port_audio.open(..., format=pyaudio.paInt16, ...).  This value, among others, can also be observed using wave_read.getparams().
+
+
+Bit Rate: Total allowance of digital quality of a particular media format (Ex. WAV, FLAC, AAC, MP3)
+bit_date = sampling_rate (kHz) * bit_depth (bits)
+
+
+As a practical example, the standard format for audio CDs is 16-bit/44.1 kHz, resulting in a bit rate of 705.6 kbps.
