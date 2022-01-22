@@ -1,8 +1,8 @@
 import os
 import sys
-from lib.audio_processing import record_audio
+from lib.assistant import choose_random_assistant_from_file
+from digital_assistant import DigitalAssistant
 from dotenv import load_dotenv
-
 
 
 load_dotenv()
@@ -15,4 +15,6 @@ except KeyError as e:
     print(f'ERROR: Could not load environment variable [{e}]. Please check the .env file definitions.')
     sys.exit(1)
 
-record_audio(SAMPLE_FREQUENCY, BIT_DEPTH, AUDIO_CHANNELS)
+
+assistant = choose_random_assistant_from_file('assistants.json')
+digital_assistant = DigitalAssistant(assistant)

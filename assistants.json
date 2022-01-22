@@ -1,0 +1,24 @@
+{
+  "assistants": [
+    {
+      "name": "JARVIS",
+      "vocal_chords_settings": "",
+      "acronym": "Just A Rather Very Intelligent System"
+    },
+    {
+      "name": "FRIDAY",
+      "vocal_chords_settings": "",
+      "acronym": "Female Replacement Intelligent Digital Assistant Youth"
+    },
+    {
+      "name": "VERONICA",
+      "vocal_chords_settings": "",
+      "acronym": "Latin alteration of the Greek name Berenice. It means she who brings victory."
+    },
+    {
+      "name": "EDITH",
+      "vocal_chords_settings": "",
+      "acronym": "Even Dead I’m The Hero"
+    }
+  ]
+}
