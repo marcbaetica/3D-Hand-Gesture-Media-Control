@@ -1,0 +1,12 @@
+User voice input (input audio stream as 1 channel, 44100 Hz, 16 bit depth per sample)
+ -> continuously extract byte stream frames
+  -> convert frames to text in real time (natural language processing neural net parallel calls)
+   -> detect intent from continuous input text and structure as json payload (intent classification neural net)
+    -> handle request (generating text response and any handling of api calls if needed)
+     -> response text converted to byte stream
+      -> output response over speakers (output audio stream)
+
+Input byte stream -> capabilities to convert frames to decimal and then use samples to continuously:
+- plot time series graph
+- plot frequency domain graph
+- average out frequency domain impulses and create 3D ball spikes vibration effect
