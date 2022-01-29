@@ -4,8 +4,8 @@ from digital_assistant import DigitalAssistant
 from pathlib import Path
 
 
-assistant = choose_random_assistant_from_file('assistants.json')
-digital_assistant = DigitalAssistant(assistant)
+# assistant = choose_random_assistant_from_file('assistants.json')
+# digital_assistant = DigitalAssistant(assistant)
 
 
 
