@@ -1,6 +1,5 @@
 import pyaudio
 import wave
-from bokeh.plotting import figure, show
 
 
 def record_audio(sample_frequency, bit_rate, audio_channels):
@@ -30,14 +29,10 @@ def save_recording(frames, port_audio, sample_frequency, bit_rate, audio_channel
         wave_writer.writeframes(b''.join(frames))
 
 
+def read_wave_file(file):
+    with wave.open(file, 'rb') as wave_reader:
+        print(type(wave_reader.readframes(10)))
+
+
 def convert_microphone_byte_frames_to_int(frames):
     return [int(item, base=16) for item in frames.hex('-', bytes_per_sep=2).split('-')]
-
-
-# y = list(range(len(frames)))
-# print(frames[2])
-# print(frames[2].decode('latin-1'))
-#
-# p = figure()
-# p.vbar(x=frames, top=y, width=0.8)
-# show(p)  # Ignored in bokeh serve call. Will only render in run. Will not render if saving to file is called.
