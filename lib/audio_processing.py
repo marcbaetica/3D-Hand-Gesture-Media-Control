@@ -30,6 +30,10 @@ def save_recording(frames, port_audio, sample_frequency, bit_rate, audio_channel
         wave_writer.writeframes(b''.join(frames))
 
 
+def convert_microphone_byte_frames_to_int(frames):
+    return [int(item, base=16) for item in frames.hex('-', bytes_per_sep=2).split('-')]
+
+
 # y = list(range(len(frames)))
 # print(frames[2])
 # print(frames[2].decode('latin-1'))

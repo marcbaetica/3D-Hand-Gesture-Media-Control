@@ -4,9 +4,10 @@ from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure, curdoc
 from dotenv import load_dotenv
 from functools import partial
+from lib.audio_processing import convert_microphone_byte_frames_to_int
 from pyaudio import PyAudio
-from time import perf_counter
 from threading import Thread
+from time import perf_counter
 
 
 load_dotenv()
@@ -29,7 +30,7 @@ class DigitalAssistant:
         self.name = name
         self.port_audio = PyAudio()
         self.microphone_frames = []
-        self.listening_stream = self.open_listening_stream_on_port_audio()
+        self.microphone_stream = self.open_listening_stream_on_port_audio()
         self.capture_stream_data()  # TODO: thread it.
         self.response_stream = None
 
@@ -43,24 +44,25 @@ class DigitalAssistant:
                                 )
 
     def capture_stream_data(self):
-        source = ColumnDataSource(dict(x=list(range(len(self.microphone_frames))), y=self.microphone_frames))
-        doc = curdoc()
-        plot = figure(width=1800, height=800)
-        print(source.data)
-        plot.step(x='x', y='y', source=source)
-        doc.add_root(plot)
-        doc.add_next_tick_callback(partial(self.update_plot, source))
+        # source = ColumnDataSource(dict(x=list(range(len(self.microphone_frames))), y=self.microphone_frames))
+        # doc = curdoc()
+        # plot = figure(width=1800, height=800)
+        # print(source.data)
+        # plot.step(x='x', y='y', source=source)
+        # doc.add_root(plot)
+        # doc.add_next_tick_callback(partial(self.update_plot, source))
         print(perf_counter())
         for _ in range(4):
-            print(f'Before reading frames: {len(self.microphone_frames)}')
-            frames = self.listening_stream.read(int(SAMPLE_FREQUENCY/4))
-            self.microphone_frames += [int(item, base=16) for item in frames.hex('-', bytes_per_sep=2).split('-')]
-            print(f'After reading frames: {len(self.microphone_frames)}')
+            # print(f'Before reading frames: {len(self.microphone_frames)}')
+            frames = self.microphone_stream.read(int(SAMPLE_FREQUENCY / 4))
+            self.microphone_frames += convert_microphone_byte_frames_to_int(frames)
+            # print(f'After reading frames: {len(self.microphone_frames)}')
             if len(self.microphone_frames) > int(SAMPLE_FREQUENCY):  # total to graph here
                 self.microphone_frames = self.microphone_frames[int(SAMPLE_FREQUENCY/4):]
-            print(f'After cleaning frames: {len(self.microphone_frames)}')
+            # print(f'After cleaning frames: {len(self.microphone_frames)}')
             # source.stream(new_data=dict(x=[source.data['x']], y=[source.data['y']]), rollover=1)
         print(perf_counter())
+        print(self.microphone_frames)
 
     def update_plot(self, source):
         source.stream(new_data=dict(x=list(range(len(self.microphone_frames))), y=self.microphone_frames), rollover=3)
