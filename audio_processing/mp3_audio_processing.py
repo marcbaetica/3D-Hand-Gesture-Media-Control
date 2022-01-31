@@ -1,2 +1,2 @@
-def get_mp3_byte_stream_from_file(file):
+def stream_mp3_bytes_from_file(file):
     pass
