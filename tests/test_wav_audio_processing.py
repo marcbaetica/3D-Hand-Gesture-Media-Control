@@ -11,7 +11,7 @@ class TestWavAudioProcessing(unittest.TestCase):
             'compression_name': 'not compressed',
             'compression_type': 'NONE',
             'markers': None,
-            'number_of_frames': 290304,
+            'total_frames': 290304,
             'sampling_frequency_hz': 32000,
             'sample_width': 2
         }

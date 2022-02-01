@@ -1,12 +1,8 @@
 import os
 import sys
-from bokeh.models import ColumnDataSource
-from bokeh.plotting import figure, curdoc
 from dotenv import load_dotenv
-from functools import partial
-from lib.audio_processing import convert_microphone_byte_frames_to_int
+from audio_processing.audio_utils import convert_microphone_byte_frames_to_int
 from pyaudio import PyAudio
-from threading import Thread
 from time import perf_counter
 
 
