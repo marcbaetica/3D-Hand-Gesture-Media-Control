@@ -43,11 +43,10 @@ def play_audio_file(file):
     port_audio = pyaudio.PyAudio()
     stream = port_audio.open(rate=audio_features['sampling_frequency_hz'],
                              channels=audio_features['channels_count'],
-                             format=port_audio.get_format_from_width(int(16 / 8)),  # TODO: Investigate if 'sample_width'!
+                             format=port_audio.get_format_from_width(audio_features['sample_width']),
                              output=True,
-                             # TODO: Should be double because of 'sample_width' of 2 so each next() generates 2048 bytes of data.
-                             # TODO: Centralize data since I can't extract data from generator function.
-                             frames_per_buffer=1024)
+                             # TODO: Centralize 1024. 1024 frames are indeed retrieved (2 bytes per frame).
+                             frames_per_buffer=1024*audio_features['sample_width'])
     next_batch = next(audio_stream, None)  # b''
     while next_batch is not None:
         stream.write(next_batch)
