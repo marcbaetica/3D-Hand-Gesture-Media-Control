@@ -1,7 +1,7 @@
 import os
 import sys
 from dotenv import load_dotenv
-from audio_processing.audio_utils import convert_microphone_byte_frames_to_int
+from audio_processing.audio_processing_utils import convert_microphone_byte_frames_to_int
 from pyaudio import PyAudio
 from time import perf_counter
 

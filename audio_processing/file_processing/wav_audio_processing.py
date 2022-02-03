@@ -7,7 +7,6 @@ def stream_wav_bytes_from_file(file):
     file = convert_relative_path_obj_or_string_to_absolute_path_string(file)
     wave_file_features = get_wav_file_features(file)
     frames_count = wave_file_features['total_frames']
-    sample_width = wave_file_features['sample_width']
     with wave.open(file, 'rb') as wave_reader:
         for _ in range(int(frames_count/batch_size) + 1):
             yield wave_reader.readframes(batch_size)

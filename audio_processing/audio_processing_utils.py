@@ -1,7 +1,6 @@
 import pyaudio
 import wave
-from audio_processing.audio_processing_factory import AudioFileProcessingFactory
-from audio_processing.wav_audio_processing import get_wav_file_features  # TODO: factory for this as well!
+from audio_processing.file_processing.audio_file_processing_factory import AudioFileProcessingFactory
 
 
 def record_audio(sample_frequency, bit_rate, audio_channels):
@@ -37,18 +36,20 @@ def convert_microphone_byte_frames_to_int(frames):
 
 # TODO: everything above this should be refactored and cleaned up!
 
-def play_audio_file(file):
-    audio_stream = AudioFileProcessingFactory.get_audio_byte_stream_from_file(file)
-    audio_features = AudioFileProcessingFactory.get_audio_file_features(file)
-    port_audio = pyaudio.PyAudio()
-    stream = port_audio.open(rate=audio_features['sampling_frequency_hz'],
-                             channels=audio_features['channels_count'],
-                             format=port_audio.get_format_from_width(audio_features['sample_width']),
-                             output=True,
-                             # TODO: Centralize 1024. 1024 frames are indeed retrieved (2 bytes per frame).
-                             frames_per_buffer=1024*audio_features['sample_width'])
-    next_batch = next(audio_stream, None)  # b''
-    while next_batch is not None:
-        stream.write(next_batch)
-        next_batch = next(audio_stream, None)
-    port_audio.terminate()
+class AudioProcessingUtils:
+    @staticmethod
+    def play_audio_file(file):
+        audio_stream = AudioFileProcessingFactory.get_audio_byte_stream_from_file(file)
+        audio_features = AudioFileProcessingFactory.get_audio_file_features(file)
+        port_audio = pyaudio.PyAudio()
+        stream = port_audio.open(rate=audio_features['sampling_frequency_hz'],
+                                 channels=audio_features['channels_count'],
+                                 format=port_audio.get_format_from_width(audio_features['sample_width']),
+                                 output=True,
+                                 # TODO: Centralize 1024. 1024 frames are indeed retrieved (2 bytes per frame).
+                                 frames_per_buffer=1024*audio_features['sample_width'])
+        next_batch = next(audio_stream, None)  # b''
+        while next_batch is not None:
+            stream.write(next_batch)
+            next_batch = next(audio_stream, None)
+        port_audio.terminate()

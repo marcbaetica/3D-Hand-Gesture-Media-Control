@@ -1,5 +1,5 @@
 import unittest
-from audio_processing.wav_audio_processing import get_wav_file_features
+from audio_processing.file_processing.wav_audio_processing import get_wav_file_features
 from pathlib import Path
 
 

@@ -1,8 +1,8 @@
-from audio_processing.audio_utils import play_audio_file
+from audio_processing.audio_processing_utils import AudioProcessingUtils
 from pathlib import Path
 
 
 audio_file = Path('audio_samples') / 'paint.wav'
 print(audio_file)
 
-play_audio_file(audio_file)
+AudioProcessingUtils.play_audio_file(audio_file)
