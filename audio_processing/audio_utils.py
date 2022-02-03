@@ -1,6 +1,6 @@
 import pyaudio
 import wave
-from audio_processing.audio_processing_factory import get_audio_byte_stream_from_file
+from audio_processing.audio_processing_factory import AudioFileProcessingFactory
 from audio_processing.wav_audio_processing import get_wav_file_features  # TODO: factory for this as well!
 
 
@@ -38,8 +38,8 @@ def convert_microphone_byte_frames_to_int(frames):
 # TODO: everything above this should be refactored and cleaned up!
 
 def play_audio_file(file):
-    audio_stream = get_audio_byte_stream_from_file(file)
-    audio_features = get_wav_file_features(file)
+    audio_stream = AudioFileProcessingFactory.get_audio_byte_stream_from_file(file)
+    audio_features = AudioFileProcessingFactory.get_audio_file_features(file)
     port_audio = pyaudio.PyAudio()
     stream = port_audio.open(rate=audio_features['sampling_frequency_hz'],
                              channels=audio_features['channels_count'],
