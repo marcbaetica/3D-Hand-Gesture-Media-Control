@@ -30,4 +30,6 @@ def get_wav_file_features(file):
             'sampling_frequency_hz': wave_read.getframerate(),
             'sample_width': wave_read.getsampwidth()  # Bytes per frame.
         }
+    # Alternatively, wave_read.getparams() yields these parameters:
+    # _wave_params(nchannels=1, sampwidth=2, framerate=32000, nframes=290304, comptype='NONE', compname='not compressed')
     return wave_properties
