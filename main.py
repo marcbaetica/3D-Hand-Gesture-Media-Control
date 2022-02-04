@@ -1,8 +1,21 @@
-from audio_processing.audio_processing_utils import AudioProcessingUtils
+from assistant.assistant import Assistant
 from pathlib import Path
 
 
-audio_file = Path('audio_samples') / 'paint.wav'
-print(audio_file)
+"""
+INSTANTIATE VIRTUAL ASSISTANT
+"""
+assistant = Assistant()
 
-AudioProcessingUtils.play_audio_file(audio_file)
+
+"""
+PLAY AUDIO FILE
+"""
+audio_file = Path('audio_samples') / 'paint.wav'
+assistant.play_audio_file(audio_file)
+
+
+"""
+SHUT DOWN VIRTUAL ASSISTANT
+"""
+assistant.shut_down()

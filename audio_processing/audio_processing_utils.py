@@ -30,18 +30,13 @@ def save_recording(frames, port_audio, sample_frequency, bit_rate, audio_channel
         wave_writer.writeframes(b''.join(frames))
 
 
-def convert_microphone_byte_frames_to_int(frames):
-    return [int(item, base=16) for item in frames.hex('-', bytes_per_sep=2).split('-')]
-
-
 # TODO: everything above this should be refactored and cleaned up!
 
 class AudioProcessingUtils:
     @staticmethod
-    def play_audio_file(file):
+    def play_audio_file(file, port_audio):  # TODO: Break down to return frames in individual function.
         audio_stream = AudioFileProcessingFactory.get_audio_byte_stream_from_file(file)
         audio_features = AudioFileProcessingFactory.get_audio_file_features(file)
-        port_audio = pyaudio.PyAudio()
         stream = port_audio.open(rate=audio_features['sampling_frequency_hz'],
                                  channels=audio_features['channels_count'],
                                  format=port_audio.get_format_from_width(audio_features['sample_width']),
@@ -52,4 +47,7 @@ class AudioProcessingUtils:
         while next_batch is not None:
             stream.write(next_batch)
             next_batch = next(audio_stream, None)
-        port_audio.terminate()
+
+    @staticmethod
+    def convert_audio_byte_frames_to_int(frames, bytes_per_frame):
+        return [int(hex_value, base=16) for hex_value in frames.hex('-', bytes_per_sep=bytes_per_frame).split('-')]
