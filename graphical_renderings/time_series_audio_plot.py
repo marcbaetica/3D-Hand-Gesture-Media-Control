@@ -13,7 +13,7 @@ class AudioPlot:
     def __init__(self, type, frames_count):
         self.type = type
         if self.type == AVAILABLE_PLOT_TYPES[0]:
-            self.plot = self.generate_time_series_plot(frames_count)
+            self.doc, self.source = self.generate_time_series_plot(frames_count)
         else:
             raise ValueError(f'Only plots of type {AVAILABLE_PLOT_TYPES} are acceptable. Received: {self.type}.')
         self.display_plot()
@@ -29,12 +29,18 @@ class AudioPlot:
         plot.line(x='x', y='y', source=source)
         doc = curdoc()
         doc.add_root(plot)
-        return doc
+        return doc, source
 
     @staticmethod
     def display_plot():
         subprocess.run(['bokeh', 'serve', '--show', 'time_series_audio_plot.py'])
         # TODO: Maybe set it up as a flask app like: https://github.com/bokeh/bokeh/blob/2.4.2/examples/howto/ajax_source.py
+
+    def _update_source_with_new_frame_data(self, new_data):
+        self.source.data['y'] = new_data
+
+    def update_source_blocking_task(self, new_data):
+        self.doc.add_next_tick_callback(partial(self._update_source_with_new_frame_data, new_data))
 
 
 def read_data_points_set_from_file(file):
