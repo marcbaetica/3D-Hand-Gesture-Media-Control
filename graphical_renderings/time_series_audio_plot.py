@@ -6,10 +6,35 @@ from threading import Thread
 from time import sleep
 
 
-# class TimeSeriesAudioPlot:
-#     @classmethod
-#     def create_time_series_plot(cls):
-#         print()
+AVAILABLE_PLOT_TYPES = ['time_series']  # Do not change elements order.
+
+
+class AudioPlot:
+    def __init__(self, type, frames_count):
+        self.type = type
+        if self.type == AVAILABLE_PLOT_TYPES[0]:
+            self.plot = self.generate_time_series_plot(frames_count)
+        else:
+            raise ValueError(f'Only plots of type {AVAILABLE_PLOT_TYPES} are acceptable. Received: {self.type}.')
+        self.display_plot()
+
+    @staticmethod
+    def generate_time_series_plot(frames_count):
+        data_points = [0 for _ in range(frames_count)]
+        source = ColumnDataSource(data={
+            'x': [i for i in range(len(data_points))],
+            'y': data_points[0]
+        })
+        plot = figure(width=1500, height=700)
+        plot.line(x='x', y='y', source=source)
+        doc = curdoc()
+        doc.add_root(plot)
+        return doc
+
+    @staticmethod
+    def display_plot():
+        subprocess.run(['bokeh', 'serve', '--show', 'time_series_audio_plot.py'])
+        # TODO: Maybe set it up as a flask app like: https://github.com/bokeh/bokeh/blob/2.4.2/examples/howto/ajax_source.py
 
 
 def read_data_points_set_from_file(file):
