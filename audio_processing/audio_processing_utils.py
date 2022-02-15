@@ -34,7 +34,7 @@ def save_recording(frames, port_audio, sample_frequency, bit_rate, audio_channel
 
 class AudioProcessingUtils:
     @staticmethod
-    def play_audio_file(file, port_audio):  # TODO: Break down to return frames in individual function.
+    def play_audio_file(file, port_audio, time_series_graph=False):  # TODO: Break down to return frames in individual function.
         audio_stream = AudioFileProcessingFactory.get_audio_byte_stream_from_file(file)
         audio_features = AudioFileProcessingFactory.get_audio_file_features(file)
         stream = port_audio.open(rate=audio_features['sampling_frequency_hz'],
@@ -45,9 +45,16 @@ class AudioProcessingUtils:
                                  frames_per_buffer=1024*audio_features['sample_width'])
         next_batch = next(audio_stream, None)  # b''
         while next_batch is not None:
+            print(AudioProcessingUtils._convert_audio_byte_frames_to_int(next_batch, 2))
             stream.write(next_batch)
             next_batch = next(audio_stream, None)
 
     @staticmethod
-    def convert_audio_byte_frames_to_int(frames, bytes_per_frame):
+    def _convert_audio_byte_frames_to_int(frames, bytes_per_frame):
         return [int(hex_value, base=16) for hex_value in frames.hex('-', bytes_per_sep=bytes_per_frame).split('-')]
+
+    def _open_time_series_plot(self):
+        pass
+
+    def _update_time_series_plot(self, new_data):
+        pass
