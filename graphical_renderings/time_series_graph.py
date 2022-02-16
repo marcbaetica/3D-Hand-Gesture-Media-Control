@@ -1,8 +1,10 @@
+import ast
+import json
 from bokeh.embed import components
 from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from flask import Flask, request
+from flask import Flask, request, Response
 from jinja2 import Template
 
 
@@ -49,14 +51,12 @@ def graph_page():
 @app.route('/set-new-data', methods=['POST'])
 def set_new_data():
     global source
-    # source.data['y'] = request.data
-    print(request.data)
-    return request.data
+    # source.data['y'] = ast.literal_eval(json.loads(request.data)['new_batch'])
+    # source.stream({'y': [randint(0, 1000) for _ in range(10)], 'x': [i for i in range(10)]}, rollover=1024)
+    # source.patch({'y': [(slice(1024), ast.literal_eval(json.loads(request.data)['new_batch']))]})
+    source.data = {'x': source.data['x'], 'y': ast.literal_eval(json.loads(request.data)['new_batch'])}
+    return Response(status=200)
 
 
 def run_flask_server():
     app.run(port=5001)
-
-
-# TODO: Remove this! -> Testing post now
-run_flask_server()

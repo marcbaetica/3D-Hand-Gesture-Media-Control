@@ -1,4 +1,5 @@
 import pyaudio
+import requests as req
 import wave
 from audio_processing.file_processing.audio_file_processing_factory import AudioFileProcessingFactory
 from graphical_renderings.time_series_graph import run_flask_server
@@ -51,6 +52,7 @@ class AudioProcessingUtils:
         # Processing batches of audio frames.
         next_batch = next(audio_stream, None)  # b''
         while next_batch is not None:
+            req.post('http://127.0.0.1:5001/set-new-data', json={'new_batch': str(AudioProcessingUtils._convert_audio_byte_frames_to_int(next_batch, 2))})  # TODO: Make URL not hardcoded.
             # print(AudioProcessingUtils._convert_audio_byte_frames_to_int(next_batch, 2))
             stream.write(next_batch)
             next_batch = next(audio_stream, None)
