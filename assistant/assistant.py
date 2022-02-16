@@ -24,8 +24,8 @@ class Assistant:
             print(f'Loaded assistant {assistant["name"]}.')
             return assistant
 
-    def play_audio_file(self, file_path):
-        AudioProcessingUtils.play_audio_file(file_path, self.port_audio)
+    def play_audio_file(self, file_path, initiate_time_series_graph):
+        AudioProcessingUtils.play_audio_file(file_path, self.port_audio, initiate_time_series_graph)
 
     @staticmethod
     def _start_port_audio():

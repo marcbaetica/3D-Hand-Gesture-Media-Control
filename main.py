@@ -12,7 +12,7 @@ assistant = Assistant()
 PLAY AUDIO FILE
 """
 audio_file = Path('audio_samples') / 'paint.wav'
-assistant.play_audio_file(audio_file)
+assistant.play_audio_file(audio_file, initiate_time_series_graph=True)
 
 
 """

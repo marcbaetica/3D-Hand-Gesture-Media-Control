@@ -2,15 +2,15 @@ from bokeh.embed import components
 from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from flask import Flask
+from flask import Flask, request
 from jinja2 import Template
 
 
 app = Flask(__name__)
 
 source = ColumnDataSource({
-            'x': [0 for _ in range(1024)],
-            'y': [i for i in range(1024)]   # TODO: Parameterize batch size.
+            'x': [i for i in range(1024)],
+            'y': [0 for _ in range(1024)]   # TODO: Parameterize batch size.
          })
 
 template = Template('''<!DOCTYPE html>
@@ -46,4 +46,17 @@ def graph_page():
     return html
 
 
-app.run(port=5001)
+@app.route('/set-new-data', methods=['POST'])
+def set_new_data():
+    global source
+    # source.data['y'] = request.data
+    print(request.data)
+    return request.data
+
+
+def run_flask_server():
+    app.run(port=5001)
+
+
+# TODO: Remove this! -> Testing post now
+run_flask_server()

@@ -1,6 +1,8 @@
 import pyaudio
 import wave
 from audio_processing.file_processing.audio_file_processing_factory import AudioFileProcessingFactory
+from graphical_renderings.time_series_graph import run_flask_server
+from threading import Thread
 
 
 def record_audio(sample_frequency, bit_rate, audio_channels):
@@ -34,7 +36,7 @@ def save_recording(frames, port_audio, sample_frequency, bit_rate, audio_channel
 
 class AudioProcessingUtils:
     @staticmethod
-    def play_audio_file(file, port_audio, time_series_graph=False):  # TODO: Break down to return frames in individual function.
+    def play_audio_file(file, port_audio, initiate_time_series_graph=False):  # TODO: Break down to return frames in individual function.
         audio_stream = AudioFileProcessingFactory.get_audio_byte_stream_from_file(file)
         audio_features = AudioFileProcessingFactory.get_audio_file_features(file)
         stream = port_audio.open(rate=audio_features['sampling_frequency_hz'],
@@ -43,9 +45,13 @@ class AudioProcessingUtils:
                                  output=True,
                                  # TODO: Centralize 1024. 1024 frames are indeed retrieved (2 bytes per frame).
                                  frames_per_buffer=1024*audio_features['sample_width'])
+        if initiate_time_series_graph:
+            thread = Thread(target=run_flask_server)
+            thread.start()
+        # Processing batches of audio frames.
         next_batch = next(audio_stream, None)  # b''
         while next_batch is not None:
-            print(AudioProcessingUtils._convert_audio_byte_frames_to_int(next_batch, 2))
+            # print(AudioProcessingUtils._convert_audio_byte_frames_to_int(next_batch, 2))
             stream.write(next_batch)
             next_batch = next(audio_stream, None)
 
