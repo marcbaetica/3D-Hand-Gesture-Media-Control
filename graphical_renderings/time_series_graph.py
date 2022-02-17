@@ -6,13 +6,18 @@ from bokeh.plotting import figure
 from bokeh.resources import INLINE
 from flask import Flask, request, Response
 from jinja2 import Template
+from random import randint
 
 
 app = Flask(__name__)
 
+# source = ColumnDataSource({
+#             'x': [i for i in range(1024)],
+#             'y': [0 for _ in range(1024)]   # TODO: Parameterize batch size.
+#          })
 source = ColumnDataSource({
-            'x': [i for i in range(1024)],
-            'y': [0 for _ in range(1024)]   # TODO: Parameterize batch size.
+            'x': [i for i in range(10)],
+            'y': [0 for _ in range(10)]   # TODO: Parameterize batch size.
          })
 
 template = Template('''<!DOCTYPE html>
@@ -52,11 +57,24 @@ def graph_page():
 def set_new_data():
     global source
     # source.data['y'] = ast.literal_eval(json.loads(request.data)['new_batch'])
-    # source.stream({'y': [randint(0, 1000) for _ in range(10)], 'x': [i for i in range(10)]}, rollover=1024)
+    source.stream({'y': [randint(0, 1000) for _ in range(10)], 'x': [i for i in range(10)]}, rollover=1024)
     # source.patch({'y': [(slice(1024), ast.literal_eval(json.loads(request.data)['new_batch']))]})
-    source.data = {'x': source.data['x'], 'y': ast.literal_eval(json.loads(request.data)['new_batch'])}
+    # source.data = {'x': source.data['x'], 'y': ast.literal_eval(json.loads(request.data)['new_batch'])}
     return Response(status=200)
 
 
 def run_flask_server():
     app.run(port=5001)
+
+
+from threading import Thread
+from time import sleep
+
+server_t = Thread(target=run_flask_server)
+server_t.start()
+
+while True:
+    source.data['y'] = [randint(0, 1000) for _ in range(10)]
+    source.data['y'] = [i for i in range(10)]
+    sleep(2)
+    print(randint(1, 30))
